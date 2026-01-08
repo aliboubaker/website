@@ -1,87 +1,213 @@
-Configure and Test an IP-Based Virtual Host Using Port 80
-Note: When copying and pasting code into Vim from the lab guide, first enter :set paste (and then i to enter insert mode) to avoid adding unnecessary spaces and hashes. To save and quit the file, press Escape followed by :wq. To exit the file without saving, press Escape followed by :q!.
+Bien sûr Ali — et bonne nouvelle : même si je ne peux pas **créer directement un fichier téléchargeable** dans ce contexte précis, je peux te fournir **le contenu exact d’un fichier `README.md` prêt à être collé dans ton projet**, sans rien à modifier.
 
-First, open the httpd.conf file to change the main Apache configuration:
+Tu n’as qu’à créer un fichier `README.md` dans ton repo et y coller ce contenu.
 
+---
+
+# 📄 **README.md (prêt à l’emploi)**
+
+```md
+# 🏢 DadCorp – Configuration Apache & Virtual Hosts
+
+Ce projet documente la configuration d’hôtes virtuels (VirtualHosts) basés sur l’adresse IP pour un serveur Apache sous RHEL7.  
+Deux environnements sont configurés :
+
+- Un VirtualHost sur le **port 80**
+- Un VirtualHost sur le **port 8080**
+
+---
+
+## 📁 Structure du projet
+
+```
+/opt/website              → Contenu du site DadCorp
+/etc/httpd/conf/httpd.conf
+/etc/httpd/conf.d/DadCorp.conf
+```
+
+---
+
+## ⚙️ 1. Configuration du VirtualHost sur le port 80
+
+### 🔧 Modifier la configuration principale Apache
+
+Ouvrir le fichier :
+
+```bash
 vim /etc/httpd/conf/httpd.conf
-Scroll down to find the Listen parameter.
+```
 
-By default, Apache is declared to be listening on port 80. Add a # in front of this option to remove it. This directive will be added to the VirtualHost file next:
+Commenter la directive :
 
+```apache
 #Listen 80
-Save and quit with Escape, followed by :wq.
+```
 
-Now you need to build your VirtualHost file. Move to the directory:
+Enregistrer et quitter :
 
+```
+:wq
+```
+
+---
+
+## 📄 2. Création du fichier DadCorp.conf
+
+Se déplacer dans le dossier :
+
+```bash
 cd /etc/httpd/conf.d/
-Open and edit the DadCorp.conf file:
+```
 
+Créer le fichier :
+
+```bash
 vim DadCorp.conf
-Enter the following:
+```
 
+Ajouter :
+
+```apache
 Listen 80
 
 <Directory "/opt">
- AllowOverride None
- Require all granted
+    AllowOverride None
+    Require all granted
 </Directory>
-Now anything that is declared in the VirtualHost as needing access to the /opt directory will have access.
-
-Declare the VirtualHost and set it up with the internal IP. Add the following to the file, below what you previously entered. Replace PRIVATE_IP with the Private IP of RHEL7 Server provided in your lab credentials:
 
 <VirtualHost PRIVATE_IP:80>
- DocumentRoot "/opt/website"
- ServerName   www.dadcorp.com
+    DocumentRoot "/opt/website"
+    ServerName www.dadcorp.com
 </VirtualHost>
-Save and quit with Escape, followed by :wq.
+```
 
-Restart Apache:
+> Remplacer **PRIVATE_IP** par l’adresse IP privée du serveur RHEL7.
 
+---
+
+## 🔄 3. Redémarrer Apache
+
+```bash
 systemctl restart httpd
-Verify the configuration works:
+```
 
+---
+
+## 🧪 4. Vérification
+
+```bash
 curl www.dadcorp.com
-You should not see the default CentOS webpage, which means that the configuration is working.
+```
 
-Configure and Test an IP-Based Virtual Host Using Port 8080
-Now you need to modify the DadCorp.conf file to include a new Listen directive with port 8080. Reopen the file:
+Vous ne devez **pas** voir la page par défaut CentOS.
 
-vim DadCorp.conf
-Below the Listen 80 directive, add the following directive for port 8080:
+---
 
+# ⚙️ 5. Configuration du VirtualHost sur le port 8080
+
+Réouvrir le fichier :
+
+```bash
+vim /etc/httpd/conf.d/DadCorp.conf
+```
+
+Ajouter :
+
+```apache
 Listen 8080
-Copy the VirtualHost stanza and paste it below. Then, modify the port to be 8080. Remember to replace PRIVATE_IP with the Private IP of RHEL7 Server provided in your lab credentials. The final file should look like this:
+```
 
+Dupliquer le VirtualHost et modifier le port :
+
+```apache
 Listen 80
 Listen 8080
 
 <Directory "/opt">
- AllowOverride None
- Require all granted
+    AllowOverride None
+    Require all granted
 </Directory>
 
 <VirtualHost PRIVATE_IP:80>
- DocumentRoot "/opt/website"
- ServerName   www.dadcorp.com
+    DocumentRoot "/opt/website"
+    ServerName www.dadcorp.com
 </VirtualHost>
 
 <VirtualHost PRIVATE_IP:8080>
- DocumentRoot "/opt/website"
- ServerName   www.dadcorp.com
+    DocumentRoot "/opt/website"
+    ServerName www.dadcorp.com
 </VirtualHost>
-Save and quit with Escape, followed by :wq.
+```
 
-Restart Apache:
+---
 
+## 🔄 6. Redémarrer Apache
+
+```bash
 systemctl restart httpd
-Verify the configuration works:
+```
 
+---
+
+## 🧪 7. Vérification
+
+```bash
 curl www.dadcorp.com:8080
-You should see the same webpage both when you use 8080 and without it.
+```
 
-Open a browser tab, and navigate to the website. Replace PUBLIC_IP with the Public IP of RHEL7 Server provided in your lab credentials:
+Vous devez voir la même page que sur le port 80.
 
-<PUBLIC_IP>:8080
-You should see the DadCorp website.
+---
 
-Remove the 8080 port from the address so that the site is served on port 80. You should see the same website.
+# 🌐 8. Test via navigateur
+
+Remplacer **PUBLIC_IP** par l’IP publique du serveur :
+
+```
+http://PUBLIC_IP:8080
+```
+
+Puis tester :
+
+```
+http://PUBLIC_IP
+```
+
+Le site DadCorp doit s’afficher dans les deux cas.
+
+---
+
+## 📝 Notes utiles
+
+### Utilisation de Vim pour coller du texte proprement
+
+```bash
+:set paste
+i
+```
+
+Quitter et enregistrer :
+
+```
+:wq
+```
+
+Quitter sans enregistrer :
+
+```
+:q!
+```
+
+---
+
+```
+
+---
+
+Si tu veux, je peux aussi te générer :
+
+- une version **plus stylée** (badges GitHub, table des matières, sections avancées)
+- une version **anglaise**
+- une version **adaptée à un projet DevOps / Cloud**
+
+Tu veux une version plus pro ou tu gardes celle‑ci ?
