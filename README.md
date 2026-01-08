@@ -1,10 +1,4 @@
-Bien sûr Ali — et bonne nouvelle : même si je ne peux pas **créer directement un fichier téléchargeable** dans ce contexte précis, je peux te fournir **le contenu exact d’un fichier `README.md` prêt à être collé dans ton projet**, sans rien à modifier.
 
-Tu n’as qu’à créer un fichier `README.md` dans ton repo et y coller ce contenu.
-
----
-
-# 📄 **README.md (prêt à l’emploi)**
 
 ```md
 # 🏢 DadCorp – Configuration Apache & Virtual Hosts
